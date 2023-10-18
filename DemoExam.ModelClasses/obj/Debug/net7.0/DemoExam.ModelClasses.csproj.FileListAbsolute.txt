@@ -1,0 +1,11 @@
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\bin\Debug\net7.0\DemoExam.ModelClasses.deps.json
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\bin\Debug\net7.0\DemoExam.ModelClasses.dll
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\bin\Debug\net7.0\DemoExam.ModelClasses.pdb
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\DemoExam.ModelClasses.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\DemoExam.ModelClasses.AssemblyInfoInputs.cache
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\DemoExam.ModelClasses.AssemblyInfo.cs
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\DemoExam.ModelClasses.csproj.CoreCompileInputs.cache
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\DemoExam.ModelClasses.dll
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\refint\DemoExam.ModelClasses.dll
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\DemoExam.ModelClasses.pdb
+C:\Users\рс\source\repos\DemoExam\DemoExam.ModelClasses\obj\Debug\net7.0\ref\DemoExam.ModelClasses.dll

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+    <PackageReference Include="YamlDotNet" Version="13.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Database.Cash\Database.Cash.csproj" />
+    <ProjectReference Include="..\DemoExam.ModelClasses\DemoExam.ModelClasses.csproj" />
+    <ProjectReference Include="..\Deserialize\Deserialize.csproj" />
+  </ItemGroup>
+
+</Project>
