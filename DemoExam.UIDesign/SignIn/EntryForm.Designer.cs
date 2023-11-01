@@ -31,7 +31,7 @@
             LoginTextBox = new TextBox();
             PasswordTextBox = new TextBox();
             SingIn = new Button();
-            NameTextBox = new TextBox();
+            FisrtNameTextBox = new TextBox();
             SuspendLayout();
             // 
             // LoginTextBox
@@ -58,19 +58,19 @@
             SingIn.UseVisualStyleBackColor = true;
             SingIn.Click += CheckoutUserInputBtn_Click;
             // 
-            // NameTextBox
+            // FisrtNameTextBox
             // 
-            NameTextBox.Location = new Point(88, 269);
-            NameTextBox.Name = "NameTextBox";
-            NameTextBox.Size = new Size(100, 23);
-            NameTextBox.TabIndex = 4;
+            FisrtNameTextBox.Location = new Point(88, 269);
+            FisrtNameTextBox.Name = "FisrtNameTextBox";
+            FisrtNameTextBox.Size = new Size(100, 23);
+            FisrtNameTextBox.TabIndex = 4;
             // 
             // EntryForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(278, 407);
-            Controls.Add(NameTextBox);
+            Controls.Add(FisrtNameTextBox);
             Controls.Add(SingIn);
             Controls.Add(PasswordTextBox);
             Controls.Add(LoginTextBox);
@@ -85,6 +85,6 @@
         private TextBox LoginTextBox;
         private TextBox PasswordTextBox;
         private Button SingIn;
-        private TextBox NameTextBox;
+        private TextBox FisrtNameTextBox;
     }
 }

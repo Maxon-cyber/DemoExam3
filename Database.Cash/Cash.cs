@@ -1,11 +1,16 @@
 ﻿using Database.Cash.FileTextProcessing;
 using Database.Cash.StorageLocation;
+using DemoExam.ModelClasses;
+using DemoExam.ModelClasses.Product;
+using DemoExam.ModelClasses.User;
 using System.Collections.Concurrent;
 
 namespace Database.Cash;
 
-public static class Cash
+public class Cash<TDataSet>
+    where TDataSet : IUserModel, IProductModel
 {
+    private static ConcurrentBag<TDataSet> dataSets = new ConcurrentBag<TDataSet>();
     private const int MAX_CAPACITY_STORAGE = 1_000;
 
     private static readonly string[] _textFile = null!;

@@ -1,9 +1,8 @@
-﻿using Database.Cash;
-using DemoExam.ModelClasses;
+﻿using DemoExam.ModelClasses;
 using DemoExam.ModelClasses.Product;
 using DemoExam.ModelClasses.User;
-using System.Collections.Concurrent;
 using Microsoft.Data.SqlClient;
+using System.Collections.Concurrent;
 
 namespace AccessingDatabase.Internal.DatabaseManagement.RelationalDb;
 
@@ -13,7 +12,7 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
 
     internal ResultRelationalDbQuery(SqlCommand? command)
         => _command = (command, command?.CommandText) is (null, null) ?
-                        throw new ArgumentNullException() :
+                        throw new ArgumentNullException("SQL-команда не создана") :
                         command;
 
     public async Task<int> GetNonQueryResultAsync()
@@ -25,10 +24,40 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
         return result;
     }
 
-    public async Task<ConcurrentQueue<TModel>> GetReaderResultArrayAsync<TModel>()
+    public async Task<int> GetNonQueryResultAsync<TModel>(TModel model)
+          where TModel : class, IModel, new()
+    {
+        int result = 0;
+
+        await Task.Run(async () =>
+        {
+            if (model is UserModel user)
+            {
+                _command.Parameters.AddWithValue("@id", user.Id);
+                _command.Parameters.AddWithValue("@first_name", user.FirstName);
+                _command.Parameters.AddWithValue("@second_name", user.SecondName);
+                _command.Parameters.AddWithValue("@patronymic", user.Patronymic);
+                _command.Parameters.AddWithValue("@login", user.Login);
+                _command.Parameters.AddWithValue("@password", user.Password);
+                _command.Parameters.AddWithValue("@description", user.Description);
+                _command.Parameters.AddWithValue("@role", user.Role);
+
+                result = await _command.ExecuteNonQueryAsync();
+            }
+            else if (model is IProductModel product)
+            {
+                _command.Parameters.AddWithValue("@id", product.GetHashCode());
+            }
+        });
+
+        return result;
+    }
+
+    public async Task<ConcurrentQueue<TModel>> GetReaderResultToArrayAsync<TModel>()
         where TModel : class, IModel, new()
     {
         ConcurrentQueue<TModel> result = new ConcurrentQueue<TModel>();
+        TModel model = new TModel();
 
         await Task.Run(async () =>
         {
@@ -38,8 +67,8 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
             {
                 while (await reader.ReadAsync())
                 {
-                    user.Name = reader["Name"].ToString();
-                    user.Role = reader["Role"].ToString();
+                    user.FirstName = reader["Name"].ToString();
+                    user.Role = Convert.ToInt32(reader["Role"]);
                     user.Login = reader["Login"].ToString();
                     user.Password = reader["Password"].ToString();
                     user.Description = reader["Description"].ToString();
@@ -47,13 +76,13 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
                     result.Enqueue(user as TModel);
                 }
             }
-            else if (result is IProductModel product)
+            else if (model is IProductModel product)
             {
                 while (await reader.ReadAsync())
                 {
-                    product.Title = reader["ProductName"]?.ToString();
-                    product.Appearance = reader["Appearance"].ToString();
-                    product.Category = reader["Category"]?.ToString();
+                    product.Title = reader["name"]?.ToString();
+                    product.Image = reader["appearance"].ToString();
+                    product.Category = reader["category"]?.ToString();
                     product.Price = Convert.ToDecimal(reader["Price"]);
 
                     result.Enqueue(product as TModel);
@@ -77,11 +106,11 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
             {
                 while (await reader.ReadAsync())
                 {
-                    user.Role = reader["Role"].ToString();
-                    user.Name = reader["Name"].ToString();
-                    user.Login = reader["Login"].ToString();
-                    user.Password = reader["Password"].ToString();
-                    user.Description = reader["Description"].ToString();
+                    user.Role = Convert.ToInt32(reader["role_id"]);
+                    user.FirstName = reader["first_name"].ToString();
+                    user.Login = reader["login"].ToString();
+                    user.Password = reader["password"].ToString();
+                    user.Description = reader["description"].ToString();
                 }
 
                 currentModel = user as TModel;

@@ -21,63 +21,92 @@ public abstract class RelationalDatabase : IDatabase
     public virtual async Task<int> ExecuteNonQueryAsync(string query)
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
-        await using SqlCommand command = new SqlCommand(query, connection);
-        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(command);
+        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection));
 
         int result = 0;
 
         try
         {
             await connection.OpenAsync();
-            result = queryResult.GetNonQueryResultAsync().Result;
+            result = await queryResult.GetNonQueryResultAsync();
         }
         catch (Exception)
         {
 
-            throw;
+            
         }
 
         return result;
     }
 
-    public virtual async Task<int> ExecuteNonQueryAsync(string query, IModel user, CommandType commandType)
+    public virtual async Task<int> ExecuteNonQueryAsync<TModel>(string query, TModel model, CommandType commandType)
+         where TModel : class, IModel, new()
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
-        await using SqlCommand command = new SqlCommand(query, connection);
-
-        command.CommandType = commandType;
-
-        return default;
-    }
-
-    public virtual async Task<ConcurrentQueue<TModel>> ExecuteReaderArrayAsync<TModel>(string query)
-        where TModel : class, IModel, new()
-    {
-        await using SqlConnection connection = new SqlConnection(_connectionString);
-        await using SqlCommand command = new SqlCommand(query, connection);
-        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(command);
-
-        ConcurrentQueue<TModel> models = default!;
+        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection) { CommandType = commandType });
+        
+        int result = 0;
 
         try
         {
             await connection.OpenAsync();
-            models = await queryResult.GetReaderResultArrayAsync<TModel>();
+            result = await queryResult.GetNonQueryResultAsync(model);
+        }
+        catch(SqlException ex)
+        {
+
+        }
+
+        return result;
+    }
+    public virtual async Task<int> ExecuteNonQueryAsync<TModel>(string query, TModel[] model, long userId, CommandType commandType)
+         where TModel : class, IModel, new()
+    {
+        await using SqlConnection connection = new SqlConnection(_connectionString);
+        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection) { CommandType = commandType });
+
+        int result = 0;
+
+        try
+        {
+            await connection.OpenAsync();
+            result = await queryResult.GetNonQueryResultAsync(model);
         }
         catch (SqlException ex)
         {
 
         }
 
-        return models;
+        return result;
+    }
+
+
+    public virtual async Task<TModel[]> ExecuteReaderToArrayAsync<TModel>(string query)
+        where TModel : class, IModel, new()
+    {
+        await using SqlConnection connection = new SqlConnection(_connectionString);
+        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection));
+
+        ConcurrentQueue<TModel> models = default!;
+
+        try
+        {
+            await connection.OpenAsync();
+            models = await queryResult.GetReaderResultToArrayAsync<TModel>();
+        }
+        catch (SqlException ex)
+        {
+
+        }
+
+        return models.ToArray();
     }
 
     public virtual async Task<TModel> ExecuteReaderAsync<TModel>(string query)
         where TModel : class, IModel, new()
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
-        await using SqlCommand command = new SqlCommand(query, connection);
-        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(command);
+        await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection));
 
         TModel model = default!;
 
@@ -88,7 +117,7 @@ public abstract class RelationalDatabase : IDatabase
         }
         catch (SqlException ex)
         {
-            throw;
+            throw ex;
         }
 
         return model;

@@ -1,36 +1,35 @@
 ﻿using DemoExam.ModelClasses.User;
-using DemoExam.UIDesign.FormWithGoods;
+using DemoExam.UIDesign.FormWithGoods.ControlManager;
+using DemoExam.UIDesign.FormWithGoods.Internal;
+using DemoExam.UIDesign.FormWithGoods.Internal.DataSet;
 
 namespace DemoExam.UIDesign;
 
 public partial class ProductForm : Form
 {
-    private readonly ManagementTableLayoutPanel _panel = default!;
-
     public ProductForm(UserModel user)
     {
         InitializeComponent();
-        //_panel = new managementtablelayoutpanel(user);
-        //_panel.setrowandcolumn(ref tablelayoutpanel1, tablelayoutpanel1.columncount);
-        //_panel.AddItems(ref tableLayoutPanel1);
+        ManagerFacade.User = user;
+        ManagerFacade.Controls = new Controls(BasketListBox, this, tableLayoutPanel1);
     }
 
-    private void AddBtn_Click(object sneder, EventArgs e)
-        => ManagementProductForm.AddItemToBasket(null, null);
-
-    private void DeleteBtn_Click(object sender, EventArgs e)
-        => ManagementProductForm.DeleteItemFromBasket();
-
-    private void OrderBtn_Click(object sender, EventArgs e)
-        => ManagementProductForm.Order();
-
-    private void panel1_Paint(object sender, PaintEventArgs e)
+    private async void ProductForm_Load(object sender, EventArgs e)
     {
+        await Task.Run(() =>
+        {
+            Action action = async () =>
+            {
+                await using TableLayoutPanelPlaceHolder panel = new TableLayoutPanelPlaceHolder();
+                await panel.GetItemsAsync();
+                await panel.AddItemsAsync(tableLayoutPanel1);
+                panel.SetRowCountAndStyle(tableLayoutPanel1);
+            };
 
-    }
-
-    private void ProductForm_Load(object sender, EventArgs e)
-    {
-
+            if (InvokeRequired)
+                Invoke(action);
+            else
+                action();
+        });
     }
 }

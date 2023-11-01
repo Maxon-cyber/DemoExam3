@@ -1,6 +1,7 @@
 ﻿using AccessingDatabase;
 using AccessingDatabase.EnumerationOfDatabases;
 using DemoExam.ModelClasses.User;
+using DemoExam.UIDesign.SignIn.Registration.CreateId;
 using DemoExam.UIDesign.SQLQueries;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -10,41 +11,38 @@ namespace DemoExam.UIDesign.SignIn.Registration;
 internal class UserRegistration
 {
     private const int NUMBER_OF_CHANGES_IN_DATABASE = 1;
-    private const string DEFAULT_ROLE = "User";
+    private const int DEFAULT_ROLE = 1;
     private const string DEFAULT_DESCRIPTION = "Buys goods";
-
-    internal UserModel NewUser { get; private set; }
-    internal bool Registered { get; private set; } = false;
-    internal Exception? RegistrationException { get; private set; }
 
     internal UserRegistration() { }
 
-    internal async Task RegistrationAsync(string name, string login, string password)
+    internal async Task<bool> RegistrationAsync(string name, string login, string password)
     {
+        int result = 0;
+
         try
         {
-            int result = await Databases
+            result = await Databases
                                    .SelectRelationalDatabase(CurrentRelationalDatabase.MSSQLDatabase)
                                    .ExecuteNonQueryAsync(
                                             StoredProcedure.InsertUser,
-                                            NewUser = new UserModel()
+                                            new UserModel()
                                             {
-                                                Name = name,
+                                                Id = ID.Create(),
+                                                DateOfRegistartion = DateTime.Now,
+                                                FirstName = name,
                                                 Role = DEFAULT_ROLE,
                                                 Login = login,
                                                 Password = password,
                                                 Description = DEFAULT_DESCRIPTION
                                             },
                                             CommandType.StoredProcedure);
-
-            if (result == NUMBER_OF_CHANGES_IN_DATABASE)
-                Registered = true;
-            else
-                NewUser = new UserModel();
         }
         catch (SqlException ex)
         {
-            RegistrationException = ex;
+            MessageBox.Show(ex.ToString());
         }
+
+        return result == NUMBER_OF_CHANGES_IN_DATABASE;
     }
 }

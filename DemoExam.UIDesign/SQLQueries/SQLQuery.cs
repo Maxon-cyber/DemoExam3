@@ -3,11 +3,11 @@
 internal static class SQLQuery
 {
     internal static string GetUser(string name, string login, string password)
-        => $"SELECT * FROM dbo.AllUsers WHERE Name = '{name}' AND Login = '{login}' AND Password = '{password}'";
+        => $"SELECT * FROM dbo.Users WHERE first_name = '{name}' AND login = '{login}' AND password = '{password}'";
 
-    internal static string GetProducts(string login, string password)
-       => $"SELECT * FROM dbo.AllProducts WHERE Login = {login} AND Password = {password}";
+    internal static string GetProductsFromBusket(string login, string password)
+        => $"SELECT * FROM dbo.Products WHERE login = '{login}' AND password = '{password}'";
 
     internal static string GetAllProducts()
-        => $"SELECT * FROM dbo.AllProducts";
+        => $"SELECT * FROM dbo.Products";
 }

@@ -1,6 +1,7 @@
 ﻿using AccessingDatabase.Internal.DatabaseManagement;
 using DemoExam.ModelClasses;
 using System.Collections.Concurrent;
+using System.Data;
 
 namespace AccessingDatabase.Internal.DatabaseManagement.NotRelationalDb;
 
@@ -11,7 +12,7 @@ public abstract class NotRelationalDatabase : IDatabase
         throw new NotImplementedException();
     }
 
-    public virtual Task<ConcurrentQueue<TModel>> ExecuteReaderArrayAsync<TModel>(string query)
+    public virtual Task<TModel[]> ExecuteReaderArrayToAsync<TModel>(string query)
         where TModel : class, IModel, new()
     {
         throw new NotImplementedException();
@@ -34,6 +35,16 @@ public abstract class NotRelationalDatabase : IDatabase
     }
 
     public ValueTask DisposeAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<TModel[]> IDatabase.ExecuteReaderToArrayAsync<TModel>(string query)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<int> IDatabase.ExecuteNonQueryAsync<TModel>(string query, TModel model, CommandType commandType)
     {
         throw new NotImplementedException();
     }

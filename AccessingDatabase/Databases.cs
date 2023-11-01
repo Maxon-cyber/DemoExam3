@@ -6,8 +6,10 @@ using AccessingDatabase.Internal.DatabaseManagement.RelationalDb.Databases;
 
 namespace AccessingDatabase;
 
-public static class Databases
+public class Databases
 {
+    private Databases() { }
+
     public static RelationalDatabase SelectRelationalDatabase(CurrentRelationalDatabase database)
         => database switch
         {

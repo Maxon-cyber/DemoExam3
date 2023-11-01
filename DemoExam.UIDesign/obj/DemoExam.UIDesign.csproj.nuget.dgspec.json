@@ -112,7 +112,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\рс\\source\\repos\\DemoExam\\DemoExam.ModelClasses\\DemoExam.ModelClasses.csproj": {
+                "projectPath": "C:\\Users\\рс\\source\\repos\\DemoExam\\DemoExam.ModelClasses\\DemoExam.ModelClasses.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

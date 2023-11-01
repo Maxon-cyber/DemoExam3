@@ -13,8 +13,8 @@ internal sealed class MSSQLDatabase : RelationalDatabase
     public override async Task<TModel> ExecuteReaderAsync<TModel>(string query)
         => await base.ExecuteReaderAsync<TModel>(query);
 
-    public override async Task<ConcurrentQueue<TModel>> ExecuteReaderArrayAsync<TModel>(string query)
-        => await base.ExecuteReaderArrayAsync<TModel>(query);
+    public override async Task<TModel[]> ExecuteReaderToArrayAsync<TModel>(string query)
+        => await base.ExecuteReaderToArrayAsync<TModel>(query);
 
     public override async Task<object> ExecuteScalarAsync(string query)
         => await base.ExecuteScalarAsync(query);

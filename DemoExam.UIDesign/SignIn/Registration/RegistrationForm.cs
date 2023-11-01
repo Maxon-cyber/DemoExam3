@@ -8,10 +8,8 @@ public partial class RegistrationForm : Form
     public RegistrationForm() => InitializeComponent();
 
     private async void RegistrBtn_Click(object sender, EventArgs e)
-    {
-        await _userRegistration.RegistrationAsync(NameTextBox.Text, EmailTextBox.Text, PasswordTextBox.Text);
-        
-        if (_userRegistration.Registered)
+    {        
+        if (await _userRegistration.RegistrationAsync(NameTextBox.Text, EmailTextBox.Text, PasswordTextBox.Text))
         {
             MessageBox.Show($"Пользователь {NameTextBox.Text} зарегистрирован");
             this.Close();

@@ -2,8 +2,12 @@
 
 public interface IUserModel : IModel
 {
-    string Name { get; set; }
-    string Role { get; set; }
+    long Id { get; set; }
+    string FirstName { get; set; }
+    string SecondName { get; set; }
+    string Patronymic { get; set; }
+    int Role { get; set; }
     string Login { get; set; }
     string Password { get; set; }
+    string Description { get; set; }
 }

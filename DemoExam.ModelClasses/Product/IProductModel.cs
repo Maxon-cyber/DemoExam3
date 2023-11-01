@@ -3,7 +3,7 @@
 public interface IProductModel : IModel
 {
     string Title { get; set; }
-    string Appearance { get; set; }
+    string Image { get; set; }
     string Category { get; set; }
     decimal Price { get; set; }
 }

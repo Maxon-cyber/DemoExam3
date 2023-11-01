@@ -745,6 +745,9 @@
       "Database.Cash/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "DemoExam.ModelClasses": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Database.Cash.dll": {}
         },
