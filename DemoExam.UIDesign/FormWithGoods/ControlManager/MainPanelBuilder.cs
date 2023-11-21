@@ -1,27 +1,40 @@
 ﻿using DemoExam.ModelClasses.Product;
 using DemoExam.UIDesign.FormWithGoods.ControlManager.ChildControlsBuilder;
-using DemoExam.UIDesign.FormWithGoods.Internal.ToolTipExtension;
-using System.Linq.Expressions;
 
 namespace DemoExam.UIDesign.FormWithGoods.ControlManager;
 
-internal sealed class MainPanelBuilder //: IDisposable, IAsyncDisposable
+internal sealed class MainPanelBuilder : IDisposable, IAsyncDisposable
 {
-    private readonly BottomPanelBuilder _childPanelBuilder = default!;
+    internal MainPanelBuilder() { }
 
-    internal MainPanelBuilder()
-        => _childPanelBuilder = new BottomPanelBuilder();
-
-    internal PictureBox CreatePictureBox(ProductModel product)
-        => new PictureBox()
+    internal async Task<Panel> CreateChildPanel(ProductModel product)
+    {
+        await using RightPanelBuilder rightPanelBuilder = new RightPanelBuilder();
+        Panel bottomPanel = new Panel()
         {
-            Name = product.Title + "PictureBox",
-            Size = new Size(278, 76),
-            Location = new Point(0, 0),
-            Image = Image.FromFile(@"C:\\Users\\рс\\Desktop\\для DemoExam1.jpg"),
-            SizeMode = PictureBoxSizeMode.StretchImage,
-        }.SetToolTip($"{product.Price}\n{product.Description}\n{product.Category}");
+            Name = "NestedPanel",
+            Size = new Size(292, 49),
+            Location = new Point(0, 106),
+            Dock = DockStyle.Bottom,
+        };
+        bottomPanel.Controls.Add(new Label()
+        {
+            Name = "NameProductLabel",
+            Text = product.Title,
+            Location = new Point(3, 18),
+        });
 
-    internal Panel CreateChildPanel(ProductModel product)
-        => _childPanelBuilder.Create(product);
+        bottomPanel.Controls.Add(await rightPanelBuilder.Create(product));
+
+        return bottomPanel;
+    }
+
+    ~MainPanelBuilder()
+        => Dispose();
+
+    public async ValueTask DisposeAsync()
+        => GC.SuppressFinalize(this);
+
+    public void Dispose()
+        => GC.SuppressFinalize(this);
 }

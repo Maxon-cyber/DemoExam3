@@ -3,14 +3,16 @@ using System.Data;
 
 namespace AccessingDatabase.Internal.DatabaseManagement;
 
-public interface IDatabase : IDisposable, IAsyncDisposable
+public interface IDatabase<TModel> : IDisposable, IAsyncDisposable
+    where TModel : class, IModel, new()
 {
-    Task<TModel[]> ExecuteReaderToArrayAsync<TModel>(string query)
-        where TModel : class, IModel, new();
-    Task<TModel> ExecuteReaderAsync<TModel>(string query)
-        where TModel : class, IModel, new();
+    Task<TModel[]> ExecuteReaderToArrayAsync(string query);
+
+    Task<TModel> ExecuteReaderAsync(string query);
+
     Task<int> ExecuteNonQueryAsync(string query);
-    Task<int> ExecuteNonQueryAsync<TModel>(string query, TModel model, CommandType commandType)
-        where TModel : class, IModel, new();
-   Task<object> ExecuteScalarAsync(string query);
+
+    Task<int> ExecuteNonQueryAsync(string query, TModel model, CommandType commandType);
+
+    Task<object> ExecuteScalarAsync(string query);
 }

@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace AccessingDatabase.Internal.DatabaseManagement;
 
-internal interface IQueryResult : IDisposable, IAsyncDisposable
+public interface IQueryResult : IDisposable, IAsyncDisposable
 {
     Task<int> GetNonQueryResultAsync<TModel>(TModel model)
           where TModel : class, IModel, new();

@@ -3,7 +3,7 @@ using DemoExam.UIDesign.FormWithGoods.Internal.DataSet;
 
 namespace DemoExam.UIDesign.FormWithGoods.Internal;
 
-internal class ManagerFacade
+internal static class ManagerFacade
 {
     internal static UserModel User { get; set; }
 

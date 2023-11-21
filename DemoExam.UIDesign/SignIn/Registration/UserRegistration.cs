@@ -1,5 +1,4 @@
-﻿using AccessingDatabase;
-using AccessingDatabase.EnumerationOfDatabases;
+﻿using AccessingDatabase.Internal.DatabaseManagement.RelationalDb.Databases;
 using DemoExam.ModelClasses.User;
 using DemoExam.UIDesign.SignIn.Registration.CreateId;
 using DemoExam.UIDesign.SQLQueries;
@@ -22,9 +21,8 @@ internal class UserRegistration
 
         try
         {
-            result = await Databases
-                                   .SelectRelationalDatabase(CurrentRelationalDatabase.MSSQLDatabase)
-                                   .ExecuteNonQueryAsync(
+            await using MSSQLDatabase<UserModel> database = new MSSQLDatabase<UserModel>();
+            result = await database.ExecuteNonQueryAsync(
                                             StoredProcedure.InsertUser,
                                             new UserModel()
                                             {

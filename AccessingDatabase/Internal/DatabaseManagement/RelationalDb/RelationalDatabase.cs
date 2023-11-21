@@ -8,21 +8,21 @@ using System.Data;
 
 namespace AccessingDatabase.Internal.DatabaseManagement.RelationalDb;
 
-public abstract class RelationalDatabase : IDatabase
+public abstract class RelationalDatabase<TModel> : IDatabase<TModel>
+    where TModel : class, IModel, new()
 {
     private readonly string? _connectionString = default;
 
     protected RelationalDatabase(string databaseName)
         => _connectionString = Deserializer<DatabaseModel>
-                                .Deserialize(ConfigFilePath.DatabaseConnection)
-                                ?.Database[databaseName]
-                                ?.ConnectionString ?? throw new NullReferenceException();
+                               .Deserialize(ConfigFilePath.DatabaseConnection)
+                               ?.Database[databaseName]
+                               ?.ConnectionString ?? throw new NullReferenceException();
 
     public virtual async Task<int> ExecuteNonQueryAsync(string query)
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
         await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection));
-
         int result = 0;
 
         try
@@ -39,8 +39,7 @@ public abstract class RelationalDatabase : IDatabase
         return result;
     }
 
-    public virtual async Task<int> ExecuteNonQueryAsync<TModel>(string query, TModel model, CommandType commandType)
-         where TModel : class, IModel, new()
+    public virtual async Task<int> ExecuteNonQueryAsync(string query, TModel model, CommandType commandType)
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
         await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection) { CommandType = commandType });
@@ -59,8 +58,8 @@ public abstract class RelationalDatabase : IDatabase
 
         return result;
     }
-    public virtual async Task<int> ExecuteNonQueryAsync<TModel>(string query, TModel[] model, long userId, CommandType commandType)
-         where TModel : class, IModel, new()
+
+    public virtual async Task<int> ExecuteNonQueryAsync(string query, TModel[] model, long userId, CommandType commandType)
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
         await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection) { CommandType = commandType });
@@ -70,7 +69,7 @@ public abstract class RelationalDatabase : IDatabase
         try
         {
             await connection.OpenAsync();
-            result = await queryResult.GetNonQueryResultAsync(model);
+            //result = await queryResult.GetNonQueryResultAsync(model);
         }
         catch (SqlException ex)
         {
@@ -81,8 +80,7 @@ public abstract class RelationalDatabase : IDatabase
     }
 
 
-    public virtual async Task<TModel[]> ExecuteReaderToArrayAsync<TModel>(string query)
-        where TModel : class, IModel, new()
+    public virtual async Task<TModel[]> ExecuteReaderToArrayAsync(string query)
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
         await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection));
@@ -102,8 +100,7 @@ public abstract class RelationalDatabase : IDatabase
         return models.ToArray();
     }
 
-    public virtual async Task<TModel> ExecuteReaderAsync<TModel>(string query)
-        where TModel : class, IModel, new()
+    public virtual async Task<TModel> ExecuteReaderAsync(string query)
     {
         await using SqlConnection connection = new SqlConnection(_connectionString);
         await using ResultRelationalDbQuery queryResult = new ResultRelationalDbQuery(new SqlCommand(query, connection));
@@ -132,8 +129,14 @@ public abstract class RelationalDatabase : IDatabase
         => Dispose();
 
     public virtual async ValueTask DisposeAsync()
-        => GC.SuppressFinalize(this);
+    {
+        GC.Collect();
+        GC.SuppressFinalize(this);
+    }
 
     public virtual void Dispose()
-        => GC.SuppressFinalize(this);
+    {
+        GC.Collect();
+        GC.SuppressFinalize(this);
+    }
 }

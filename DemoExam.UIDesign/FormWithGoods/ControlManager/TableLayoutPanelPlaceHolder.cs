@@ -1,29 +1,31 @@
-﻿using AccessingDatabase;
-using AccessingDatabase.EnumerationOfDatabases;
+﻿using AccessingDatabase.Internal.DatabaseManagement.RelationalDb.Databases;
 using DemoExam.ModelClasses.Product;
-using DemoExam.UIDesign.FormWithGoods.Internal.DataSet;
 using DemoExam.UIDesign.SQLQueries;
 
 namespace DemoExam.UIDesign.FormWithGoods.ControlManager;
 
 internal sealed class TableLayoutPanelPlaceHolder : IDisposable, IAsyncDisposable
 {
-    private ProductModel[] _products = default!;
-    private readonly MainPanel _managementPanel = default!;
+    internal TableLayoutPanelPlaceHolder() { }
 
-    internal TableLayoutPanelPlaceHolder()
-        => _managementPanel = new MainPanel();
-
-    internal async Task GetItemsAsync()
+    internal async Task AddItemsAsync(TableLayoutPanel panel)
     {
-        _products = await Databases
-                        .SelectRelationalDatabase(CurrentRelationalDatabase.MSSQLDatabase)
-                        .ExecuteReaderToArrayAsync<ProductModel>(SQLQuery.GetAllProducts());
-    }
+        panel.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
+        await using MSSQLDatabase<ProductModel> database = new MSSQLDatabase<ProductModel>();
+        await using ParentPanel parentPanel = new ParentPanel();
 
-    internal void SetRowCountAndStyle(TableLayoutPanel panel)
-    {
-        panel.RowCount = 44 / 3;
+        ProductModel[] products = await database.ExecuteReaderToArrayAsync(SQLQuery.GetAllProducts());
+        Panel[] panels = await parentPanel.CreateAsync(products);
+
+        panel.SuspendLayout();
+        foreach (int index in ParallelEnumerable.Range(0, panels.Length))
+        {
+            panel.SetCellPosition(panels[index], new TableLayoutPanelCellPosition());
+            panel.Controls.Add(panels[index]);
+        }
+        panel.ResumeLayout();
+
+        panel.RowCount = 45 / 3;
         panel.ColumnStyles.Clear();
         panel.RowStyles.Clear();
 
@@ -31,12 +33,6 @@ internal sealed class TableLayoutPanelPlaceHolder : IDisposable, IAsyncDisposabl
             panel.RowStyles.Add(new RowStyle() { Height = 50, SizeType = SizeType.Percent });
         for (int index = 0; index < panel.ColumnCount; index++)
             panel.ColumnStyles.Add(new ColumnStyle() { Width = 33, SizeType = SizeType.Percent });
-    }
-
-    internal async Task AddItemsAsync(TableLayoutPanel panel)
-    {
-        panel.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
-        panel.Controls.AddRange(await _managementPanel.CreateAsync(_products));
     }
 
     ~TableLayoutPanelPlaceHolder()

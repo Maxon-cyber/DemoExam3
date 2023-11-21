@@ -1,5 +1,4 @@
-﻿using AccessingDatabase;
-using AccessingDatabase.EnumerationOfDatabases;
+﻿using AccessingDatabase.Internal.DatabaseManagement.RelationalDb.Databases;
 using DemoExam.ModelClasses.User;
 using DemoExam.UIDesign.SignIn.Registration;
 using DemoExam.UIDesign.SQLQueries;
@@ -14,15 +13,14 @@ internal sealed class CheckoutUserInput
 
     internal async Task<(bool IsRegistered, UserModel User)> Check(string name, string login, string password, EntryForm entryForm)
     {
-        UserModel user = await Databases
-                              .SelectRelationalDatabase(CurrentRelationalDatabase.MSSQLDatabase)
-                              .ExecuteReaderAsync<UserModel>(SQLQuery.GetUser(name, login, password));
+        await using MSSQLDatabase<UserModel> database = new MSSQLDatabase<UserModel>();
+        UserModel user = await database.ExecuteReaderAsync(SQLQuery.GetUser(name, login, password));
 
         if ((name, login, password) == (user.FirstName, user.Login, user.Password))
         {
             MessageBox.Show($"Добро Пожаловать, {user.FirstName}!");
             return (true, user);
-        }   
+        }
         else
         {
             if (MessageBox.Show("Зарегистрироваться?", "Регистрация", MessageBoxButtons.YesNoCancel) == DialogResult.Yes)

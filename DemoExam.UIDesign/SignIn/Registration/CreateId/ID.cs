@@ -6,16 +6,16 @@ internal struct ID
 {
     private const int COUNT_OF_NUMBERS_IN_ID = 8;
 
-    private static readonly StringBuilder _builderId = new StringBuilder();
-
     internal static long Create()
     {
+        StringBuilder builderId = new StringBuilder();
+
         for (int count = 0; count < COUNT_OF_NUMBERS_IN_ID; count++)
-            _builderId.Append(new Random().Next(1, 9));
+            builderId.Append(new Random().Next(1, 9));
 
-        long id = Convert.ToInt64(_builderId.ToString());
+        long id = Convert.ToInt64(builderId.ToString());
 
-        _builderId.Clear();
+        builderId.Clear();
 
         return id;
     }

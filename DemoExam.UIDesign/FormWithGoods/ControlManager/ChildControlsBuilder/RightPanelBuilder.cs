@@ -1,14 +1,14 @@
 ﻿using DemoExam.ModelClasses.Product;
 using DemoExam.UIDesign.FormWithGoods.ControlManager.EventsControl;
-using DemoExam.UIDesign.FormWithGoods.Internal.ToolTipExtension;
+using DemoExam.UIDesign.FormWithGoods.Internal.ControlsExtensions;
 
 namespace DemoExam.UIDesign.FormWithGoods.ControlManager.ChildControlsBuilder;
 
-internal class RightPanelBuilder
+internal class RightPanelBuilder : IDisposable, IAsyncDisposable
 {
     internal RightPanelBuilder() { }
 
-    internal Panel Create(ProductModel product)
+    internal async Task<Panel> Create(ProductModel product)
     {
         Panel rightPanel = new Panel()
         {
@@ -26,14 +26,6 @@ internal class RightPanelBuilder
             Size = new Size(23, 23),
         }.SetToolTip("Добавить товар в корзину");
 
-        Label counter = new Label()
-        {
-            Name = "" + product.Title,
-            Text = "0",
-            Size = new Size(30, 30),
-            Location = new Point(56, 18),
-        };
-
         Button subButton = new Button()
         {
             Name = "SubProductButton",
@@ -44,14 +36,22 @@ internal class RightPanelBuilder
         }.SetToolTip("Удалить товар из корзины");
 
 
-        ButtonEventManager buttonEvent = new ButtonEventManager(product, counter);
+        ButtonEventManager buttonEvent = new ButtonEventManager(product);
         addButton.Click += buttonEvent.AddItemToBasket!;
         subButton.Click += buttonEvent.DeleteItemFromBasket!;
 
-        rightPanel.Controls.Add(counter);
         rightPanel.Controls.Add(addButton);
         rightPanel.Controls.Add(subButton);
 
         return rightPanel;
     }
+
+    ~RightPanelBuilder()
+       => Dispose();
+
+    public async ValueTask DisposeAsync()
+        => GC.SuppressFinalize(this);
+
+    public void Dispose()
+        => GC.SuppressFinalize(this);
 }

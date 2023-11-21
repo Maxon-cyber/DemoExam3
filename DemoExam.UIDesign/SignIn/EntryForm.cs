@@ -11,9 +11,14 @@ public partial class EntryForm : Form
 
     private async void CheckoutUserInputBtn_Click(object sender, EventArgs e)
     {
+        SingIn.Click -= CheckoutUserInputBtn_Click!;
         (bool isRegistered, UserModel user) = await _checkoutUserInput.Check(FisrtNameTextBox.Text, LoginTextBox.Text, PasswordTextBox.Text, this);
+        
         if (!isRegistered)
+        {
+            SingIn.Click += CheckoutUserInputBtn_Click!;
             return;
+        }
 
         this.Close();
 

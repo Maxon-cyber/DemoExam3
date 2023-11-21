@@ -1,6 +1,8 @@
 ﻿using DemoExam.ModelClasses.User;
 using DemoExam.UIDesign.FormWithGoods.ControlManager;
+using DemoExam.UIDesign.FormWithGoods.ControlManager.EventsControl;
 using DemoExam.UIDesign.FormWithGoods.Internal;
+using DemoExam.UIDesign.FormWithGoods.Internal.ControlsExtensions;
 using DemoExam.UIDesign.FormWithGoods.Internal.DataSet;
 
 namespace DemoExam.UIDesign;
@@ -11,25 +13,31 @@ public partial class ProductForm : Form
     {
         InitializeComponent();
         ManagerFacade.User = user;
-        ManagerFacade.Controls = new Controls(BasketListBox, this, tableLayoutPanel1);
+        ManagerFacade.Controls = new Controls(BasketListBox, SearchTextBox, this, ProductsViewTable);
     }
 
     private async void ProductForm_Load(object sender, EventArgs e)
     {
         await Task.Run(() =>
         {
-            Action action = async () =>
+            ProductsViewTable.ThreadSafeAddition(async () =>
             {
                 await using TableLayoutPanelPlaceHolder panel = new TableLayoutPanelPlaceHolder();
-                await panel.GetItemsAsync();
-                await panel.AddItemsAsync(tableLayoutPanel1);
-                panel.SetRowCountAndStyle(tableLayoutPanel1);
-            };
-
-            if (InvokeRequired)
-                Invoke(action);
-            else
-                action();
+                await panel.AddItemsAsync(ProductsViewTable);
+            });
         });
+    }
+
+    internal void Search(object sender, EventArgs e)
+    {
+        Control needControl = ProductsViewTable.Controls.Find($"MainPanel{SearchTextBox.Text}", true).First();
+
+        int desiredRow = ProductsViewTable.GetRow(needControl);
+
+        if (desiredRow < 0)
+            MessageBox.Show("Товар не найден");
+        else
+            ProductsViewTable.ScrollControlIntoView(ProductsViewTable.GetControlFromPosition(0, desiredRow));
+
     }
 }

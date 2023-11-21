@@ -1,24 +1,28 @@
-﻿using System.Collections.Concurrent;
+﻿using DemoExam.ModelClasses;
+using System.Data;
 
 namespace AccessingDatabase.Internal.DatabaseManagement.RelationalDb.Databases;
 
-internal sealed class MSSQLDatabase : RelationalDatabase
+public sealed class MSSQLDatabase<TModel> : RelationalDatabase<TModel>
+    where TModel : class, IModel, new()
 {
-    private readonly static Lazy<MSSQLDatabase> _instance = new Lazy<MSSQLDatabase>(() => new MSSQLDatabase());
+    public MSSQLDatabase() : base("MSSQLDatabase") { }
 
-    internal static MSSQLDatabase GetInstance() => _instance.Value;
+    public override async Task<TModel> ExecuteReaderAsync(string query)
+        => await base.ExecuteReaderAsync(query);
 
-    private MSSQLDatabase() : base("MSSQLDatabase") { }
+    public override async Task<TModel[]> ExecuteReaderToArrayAsync(string query)
+        => await base.ExecuteReaderToArrayAsync(query);
 
-    public override async Task<TModel> ExecuteReaderAsync<TModel>(string query)
-        => await base.ExecuteReaderAsync<TModel>(query);
+    public override async Task<int> ExecuteNonQueryAsync(string query, TModel[] model, long userId, CommandType commandType)
+        => await base.ExecuteNonQueryAsync(query, model, userId, commandType);
 
-    public override async Task<TModel[]> ExecuteReaderToArrayAsync<TModel>(string query)
-        => await base.ExecuteReaderToArrayAsync<TModel>(query);
+    public override async Task<int> ExecuteNonQueryAsync(string query, TModel model, CommandType commandType)
+        => await base.ExecuteNonQueryAsync(query, model, commandType);
 
     public override async Task<object> ExecuteScalarAsync(string query)
         => await base.ExecuteScalarAsync(query);
 
-    public override Task<int> ExecuteNonQueryAsync(string query)
-        => base.ExecuteNonQueryAsync(query);
+    public override async Task<int> ExecuteNonQueryAsync(string query)
+        => await base.ExecuteNonQueryAsync(query);
 }

@@ -12,7 +12,7 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
 
     internal ResultRelationalDbQuery(SqlCommand? command)
         => _command = (command, command?.CommandText) is (null, null) ?
-                        throw new ArgumentNullException("SQL-команда не создана") :
+                        throw new ArgumentNullException(command.Parameters.ToString()) :
                         command;
 
     public async Task<int> GetNonQueryResultAsync()
@@ -106,6 +106,7 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
             {
                 while (await reader.ReadAsync())
                 {
+                    user.Id = Convert.ToInt64(reader["id"]);
                     user.Role = Convert.ToInt32(reader["role_id"]);
                     user.FirstName = reader["first_name"].ToString();
                     user.Login = reader["login"].ToString();
@@ -135,12 +136,14 @@ internal sealed class ResultRelationalDbQuery : IQueryResult
     public async ValueTask DisposeAsync()
     {
         await _command.DisposeAsync();
+        GC.Collect();
         GC.SuppressFinalize(this);
     }
 
     public void Dispose()
     {
         _command.Dispose();
+        GC.Collect();
         GC.SuppressFinalize(this);
     }
 }

@@ -28,27 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            tableLayoutPanel1 = new TableLayoutPanel();
+            ProductsViewTable = new TableLayoutPanel();
             BasketListBox = new ListBox();
-            textBox1 = new TextBox();
+            SearchTextBox = new TextBox();
             label1 = new Label();
-            button1 = new Button();
+            searchButton = new Button();
             SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // ProductsViewTable
             // 
-            tableLayoutPanel1.AutoScroll = true;
-            tableLayoutPanel1.ColumnCount = 3;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333359F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33334F));
-            tableLayoutPanel1.Location = new Point(0, 218);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel1.Size = new Size(895, 328);
-            tableLayoutPanel1.TabIndex = 2;
+            ProductsViewTable.AutoScroll = true;
+            ProductsViewTable.ColumnCount = 3;
+            ProductsViewTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            ProductsViewTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333359F));
+            ProductsViewTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33334F));
+            ProductsViewTable.Location = new Point(0, 218);
+            ProductsViewTable.Name = "ProductsViewTable";
+            ProductsViewTable.RowCount = 2;
+            ProductsViewTable.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
+            ProductsViewTable.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
+            ProductsViewTable.Size = new Size(895, 328);
+            ProductsViewTable.TabIndex = 2;
             // 
             // BasketListBox
             // 
@@ -62,12 +62,12 @@
             BasketListBox.Sorted = true;
             BasketListBox.TabIndex = 3;
             // 
-            // textBox1
+            // SearchTextBox
             // 
-            textBox1.Location = new Point(94, 50);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(404, 23);
-            textBox1.TabIndex = 4;
+            SearchTextBox.Location = new Point(94, 50);
+            SearchTextBox.Name = "SearchTextBox";
+            SearchTextBox.Size = new Size(404, 23);
+            SearchTextBox.TabIndex = 4;
             // 
             // label1
             // 
@@ -78,25 +78,26 @@
             label1.TabIndex = 5;
             label1.Text = "Поиск:";
             // 
-            // button1
+            // searchButton
             // 
-            button1.Location = new Point(520, 50);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 6;
-            button1.Text = "Найти";
-            button1.UseVisualStyleBackColor = true;
+            searchButton.Location = new Point(520, 50);
+            searchButton.Name = "searchButton";
+            searchButton.Size = new Size(75, 23);
+            searchButton.TabIndex = 6;
+            searchButton.Text = "Найти";
+            searchButton.UseVisualStyleBackColor = true;
+            searchButton.Click += Search;
             // 
             // ProductForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(907, 546);
-            Controls.Add(button1);
+            Controls.Add(searchButton);
             Controls.Add(label1);
-            Controls.Add(textBox1);
+            Controls.Add(SearchTextBox);
             Controls.Add(BasketListBox);
-            Controls.Add(tableLayoutPanel1);
+            Controls.Add(ProductsViewTable);
             Name = "ProductForm";
             Text = "ProductForm";
             Load += ProductForm_Load;
@@ -105,10 +106,10 @@
         }
 
         #endregion
-        private TableLayoutPanel tableLayoutPanel1;
-        private TextBox textBox1;
+        private TableLayoutPanel ProductsViewTable;
+        private TextBox SearchTextBox;
         private Label label1;
-        private Button button1;
+        private Button searchButton;
         private ListBox BasketListBox;
     }
 }
